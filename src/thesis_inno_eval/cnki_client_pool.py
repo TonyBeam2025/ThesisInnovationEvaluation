@@ -191,7 +191,6 @@ class CNKIClient:
                         cleaned_pages = self.clean_html(page_range)
                         if cleaned_pages:
                             processed_item["PageRange"] = cleaned_pages
-                            processed_item["Source"]["pages"] = cleaned_pages
                 
                 # 处理基金信息
                 if "funds" in item and item["funds"]:
