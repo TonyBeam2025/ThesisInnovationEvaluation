@@ -134,6 +134,10 @@ class CNKIClient:
                             processed_item["Journal"] = self.clean_html(value)  # 期刊名称
                         elif name == "DB":
                             processed_item["Database"] = value  # 数据库类型
+                        elif name == "PM":
+                            page_value = self.clean_html(value)
+                            if page_value:
+                                processed_item["PageRange"] = page_value
                 
                 # 处理作者信息
                 if "authors" in item and item["authors"]:
@@ -182,6 +186,12 @@ class CNKIClient:
                         "volume": source.get("volume", ""),
                         "issue": source.get("issue", "")
                     }
+                    page_range = processed_item.get("PageRange") or source.get("pages") or source.get("pageRange")
+                    if page_range:
+                        cleaned_pages = self.clean_html(page_range)
+                        if cleaned_pages:
+                            processed_item["PageRange"] = cleaned_pages
+                            processed_item["Source"]["pages"] = cleaned_pages
                 
                 # 处理基金信息
                 if "funds" in item and item["funds"]:
@@ -297,7 +307,7 @@ class CNKIClient:
             "size": 50,
             "sort": "PT",
             "sequence": "DESC",
-            "select": "TI,AB,KY,DB,LY,YE,PT",
+            "select": "TI,AB,KY,DB,LY,YE,PT,PM",
             "q": {
                 "logic": "AND",
                 "items": [{

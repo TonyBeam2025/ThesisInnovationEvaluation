@@ -56,7 +56,16 @@ def _pretty_print(result: dict, limit: int) -> None:
             if meta.get("name") == "PT":
                 pt_value = meta.get("value")
                 break
-        print(f"[{idx}] {title} ({year}), PT={pt_value}")
+        page_range = item.get("PageRange")
+        info_parts = []
+        if year:
+            info_parts.append(str(year))
+        if pt_value:
+            info_parts.append(f"PT={pt_value}")
+        if page_range:
+            info_parts.append(f"Pages={page_range}")
+        info_suffix = f" ({', '.join(info_parts)})" if info_parts else ""
+        print(f"[{idx}] {title}{info_suffix}")
     if len(items) > limit:
         print(f"... {len(items) - limit} more items not shown ...")
 
@@ -73,7 +82,7 @@ def _build_example_query_payload(expression: str, lang: str, pt_upper: str, size
         'size': size,
         'sort': 'PT',
         'sequence': 'DESC',
-        'select': 'TI,AB,KY,DB,LY,YE,PT',
+        'select': 'TI,AB,KY,DB,LY,YE,PT,PM',
         'q': {
             'logic': 'AND',
             'items': [
