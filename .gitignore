@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+.venv_*/
+.marker-env/
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Local caches and logs
+cache/
+logs/*.log
+logs/*.log.*
+logs/app.log
+
+# Generated data outputs (tracked samples stay in git)
+data/output/analysis/*.json
+data/output/structured/*.json
+data/sample/*
+!data/sample/README.md
+
+# Large archives
+*.7z
+
+# Local fallback config files
+conf.yaml
+
+# IDE / editor junk
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

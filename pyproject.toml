@@ -1,0 +1,254 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "thesis-inno-eval"
+version = "0.1.0"
+description = "基于AI的学位论文创新评估系统"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Thesis Evaluation Team", email = "team@example.com" }
+]
+maintainers = [
+    { name = "Thesis Evaluation Team", email = "team@example.com" }
+]
+keywords = [
+    "thesis",
+    "evaluation", 
+    "ai",
+    "cnki",
+    "literature-review",
+    "academic-research"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic"
+]
+requires-python = ">=3.10"
+
+# 核心依赖
+dependencies = [
+    # HTTP requests and web scraping
+    "requests>=2.31.0",
+    # Configuration management
+    "pyyaml>=6.0",
+    # CLI interface
+    "click>=8.0.0",
+    # Machine learning and data processing
+    "sentence-transformers>=2.2.2",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    # AI SDKs
+    "google-generativeai>=0.3.0",
+    "openai>=1.0.0",
+    # Document processing
+    "python-docx>=1.0.0",
+    # Additional utilities
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.65.0",
+    "docx2txt>=0.9",
+    "antiword>=0.1.0",
+    "pywin32>=311",
+]
+
+# 可选依赖组
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "httpx>=0.24.0",  # for testing HTTP clients
+]
+
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "myst-parser>=1.0.0",
+]
+
+# 性能优化相关
+performance = [
+    "uvloop>=0.17.0; sys_platform != 'win32'",  # Unix系统上的事件循环优化
+    "orjson>=3.8.0",  # 更快的JSON处理
+]
+
+# 完整开发环境
+all = [
+    "thesis-inno-eval[dev,test,docs,performance]"
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/thesis-inno-eval"
+Documentation = "https://thesis-inno-eval.readthedocs.io"
+Repository = "https://github.com/your-org/thesis-inno-eval.git"
+"Bug Tracker" = "https://github.com/your-org/thesis-inno-eval/issues"
+Changelog = "https://github.com/your-org/thesis-inno-eval/blob/main/CHANGELOG.md"
+
+[project.scripts]
+thesis-eval = "thesis_inno_eval.cli:cli"
+extract-sections = "thesis_inno_eval.extract_sections_with_ai:main"
+
+# 工具配置
+
+[tool.hatch.version]
+path = "src/thesis_inno_eval/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "coverage[toml]>=6.5",
+    "pytest",
+]
+
+[tool.hatch.envs.default.scripts] 
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+    "- coverage combine",
+    "coverage report",
+]
+cov-html = [
+    "- coverage combine", 
+    "coverage html",
+]
+
+# 开发环境脚本
+[tool.hatch.envs.dev]
+dependencies = [
+    "thesis-inno-eval[dev]"
+]
+
+[tool.hatch.envs.dev.scripts]
+format = [
+    "black .",
+    "isort .",
+]
+lint = [
+    "flake8 .",
+    "mypy .",
+]
+check = [
+    "format",
+    "lint", 
+    "test",
+]
+
+# Black代码格式化配置
+[tool.black]
+target-version = ["py310"]
+line-length = 88
+skip-string-normalization = true
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | cache
+  | data/output
+  | data/sample
+  | logs
+  | tools/legacy
+)/
+'''
+
+# isort导入排序配置
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["thesis_inno_eval"]
+skip = ["data/output", "data/sample", "logs", "tools/legacy"]
+
+# Pytest配置
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config", 
+    "--disable-warnings",
+    "-ra",
+]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+# Coverage配置
+[tool.coverage.run]
+source = ["thesis_inno_eval"]
+branch = true
+parallel = true
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__about__.py",
+]
+
+[tool.coverage.paths]
+thesis_inno_eval = ["src/thesis_inno_eval", "*/thesis-inno-eval/src/thesis_inno_eval"]
+tests = ["tests", "*/thesis-inno-eval/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+# MyPy类型检查配置
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sentence_transformers.*",
+    "google.generativeai.*",
+]
+ignore_missing_imports = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]
